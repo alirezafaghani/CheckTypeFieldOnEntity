@@ -1,0 +1,23 @@
+public ResultModel CheckTypeFieldOnAssignEntity(Guid targetId)
+        {
+            try
+            {
+                QueryExpression query = new QueryExpression("AssignEntity");
+                query.ColumnSet = new ColumnSet("rule", "type", "assignpermissionruleid");
+                query.Criteria.AddCondition("rule", ConditionOperator.Equal, targetId);
+                query.Criteria.AddCondition("type", ConditionOperator.Equal, 1);
+                EntityCollection AssignEntityentity = _service.RetrieveMultiple(query);
+
+                if (AssignEntityentity != null && AssignEntityentity.Entities != null)
+                {
+                    if (AssignEntityentity.Entities.Count() > 1)
+                        return new ResultModel() { HasError = true, Message = "ساخت  Donator با نوع   AssignEntity نمی توان بصورت همزمان 2 عدد " };
+                }
+
+                return new ResultModel() { HasError = false };
+            }
+            catch (Exception ex)
+            {
+                return new ResultModel() { HasError = true, Message = ex.Message };
+            }
+        }
